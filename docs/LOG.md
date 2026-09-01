@@ -10,9 +10,9 @@ is opened, and reviewed in the PR like any other change.
 = one specific line, not "made changes." `Contracts touched` = `None`, or
 name the exact contract (DB schema, `completion()` signature,
 `profile.yaml` schema, a named agent tool signature); mandatory to fill in
-per `CONVENTIONS.md` §8. `Notes / follow-ups` = anything the next task
-needs to know, or `None`. If a decision needs more room than that, put it
-in the PR description and reference it here (`See PR #14`).
+per `AGENTS.md`'s Rules That Always Apply. `Notes / follow-ups` = anything
+the next task needs to know, or `None`. If a decision needs more room than
+that, put it in the PR description and reference it here (`See PR #14`).
 
 **Rules:** Agent-written, not human-paraphrased. Written before the PR,
 part of the PR diff. Append-only: never edit or delete an earlier row; a
@@ -20,22 +20,22 @@ correction gets its own new row ("Corrects S0-03: ..."). One row per task.
 "None" is a complete answer; "made some changes to the schema" is not.
 
 **Before starting a new task:** read the last 5-10 rows below, then run
-`git log --oneline sprint-1..HEAD` (or the relevant sprint branch) to see
-the real commit sequence alongside them. If a recent row's "Contracts
-touched" names something relevant to the current task, re-read that
-contract's current definition before writing code against it. Don't rely
-on memory of a previous session or ask a human to re-summarize; this table
-and git history are the source of truth.
+`git log --oneline <sprint-branch>..HEAD` (the branch for the current
+sprint) to see the real commit sequence alongside them. If a recent row's
+"Contracts touched" names something relevant to the current task, re-read
+that contract's current definition before writing code against it. Don't
+rely on memory of a previous session or ask a human to re-summarize; this
+table and git history are the source of truth.
 
 **Merge conflicts:** expected occasionally, since this is one shared file
 with entries appended at the bottom. Keep both new rows; exact ordering of
 two same-day entries doesn't matter.
 
-See `docs/dev/CONVENTIONS.md` for coding style, `docs/dev/TESTING.md` for test
-requirements, and `docs/dev/TASK_TEMPLATE.md` for how a task is scoped.
+See `AGENTS.md` for coding style and test requirements, and
+`TASK_TEMPLATE.md` (repo root) for how a task is scoped.
 
 ---
 
-| Card | Agent | What changed | Contracts touched | Notes / follow-ups |
-|---|---|---|---|---|
+| Card  | Agent       | What changed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Contracts touched                                                                                                                    | Notes / follow-ups                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ----- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | S0-01 | Claude Code | Added `config/schema.py` (Pydantic `Profile` schema for the full `profile.yaml` shape: resume, roles, locations, compensation, dream companies, referral contacts, `llm` provider pass-through, thresholds, sources, mode/partners, notifications, dashboard), `config/loader.py` (`load_profile()` returning a validated `Profile`, with `ProfileNotFoundError` / `ProfileParseError` / `ProfileValidationError` and field-naming error messages), and rewrote `config/profile.example.yaml` as a fully-commented file with valid sample values. Declared `pydantic[email]` + `pyyaml` deps, `pytest`/`ruff` dev deps, and added minimal `[tool.pytest.ini_options]` + `[tool.ruff]` config to `pyproject.toml`. | **Defines** the `profile.yaml` schema contract (`config/schema.py::Profile`). Any task consuming profile data depends on this shape. | `llm.provider`/`llm.model` are validated here (provider ∈ {anthropic, openai, ollama}) but interpreted by S0-04; extend the `LlmProvider` literal there if more providers are added. `notifications.digest_email_enabled` defaults to `false` so a minimal profile validates. `mode: shared` requires a non-empty `partners` list (FR16). Card cited `docs/CONVENTIONS.md`/`docs/TESTING.md`/`docs/task-log/` — those don't exist; followed `AGENTS.md` and logged here in `docs/LOG.md`. |
