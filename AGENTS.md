@@ -14,7 +14,7 @@ obvious task:
    real latest state, not a stale local copy.
 2. `git log --oneline <sprint-branch>..HEAD` — see what's actually been
    committed since the sprint started.
-3. Read the last 5-10 rows of `docs/dev/task-log/LOG.md` — they explain
+3. Read the last 5-10 rows of `docs/LOG.md` — they explain
    _why_ recent changes were made, which the commit log alone won't tell
    you.
 4. Read the current task's Trello card in full. It is the task prompt.
@@ -155,7 +155,7 @@ than after.
 - The author does not merge their own PR.
 - Every PR that touches a documented contract (DB schema, `completion()`
   signature, `profile.yaml` schema, a named agent tool's signature) must
-  include the task-log entry (see `docs/dev/task-log/LOG.md`) — this
+  include the task-log entry (see `docs/LOG.md`) — this
   is checked by the reviewer, not optional.
 
 If something comes up that isn't covered here, resolve it once, add the
@@ -363,11 +363,11 @@ edge-case + graceful-degradation baseline above):
 - [ ] [ ... ]
 - [ ] `uv run pytest` passes
 - [ ] `uv run ruff check .` passes
-- [ ] Task log row appended to docs/dev/task-log/LOG.md
+- [ ] Task log row appended to docs/LOG.md
 
 ## Task Log Requirement
 
-Before opening the PR, append one row to `docs/dev/task-log/LOG.md` per the
+Before opening the PR, append one row to `docs/LOG.md` per the
 format described at the top of that file: card ID, agent, what changed,
 contracts touched, and any notes or follow-ups.
 
@@ -409,7 +409,7 @@ contracts touched, and any notes or follow-ups.
   particular: check whether a mirrored test file already exists before
   creating one — never create a second test file for a source file that
   already has one.
-- Every task ends with a new row appended to `docs/dev/task-log/LOG.md`,
+- Every task ends with a new row appended to `docs/LOG.md`,
   written before the PR is opened, per the format described at the top of
   that file.
 - No direct commits to `main`. Branch per task: `feature/<trello-card-name>`.
@@ -419,10 +419,9 @@ contracts touched, and any notes or follow-ups.
 ## Where Things Live
 
 - `docs/SETUP.md` — user-facing setup instructions for running your own instance.
-- `docs/design/` — the Design & Requirements specification (source of
-  truth for what the system does) and the Development Plan (source of
-  truth for build order and schema).
-- `docs/dev/task-log/LOG.md` — the running task log; format and rules are
+- `docs/Design-Requirements.docx` — the Design & Requirements
+  specification (source of truth for what the system does).
+- `docs/LOG.md` — the running task log; format and rules are
   in a header block at the top of that same file.
 
 If an instruction in a Trello card conflicts with something in this file
