@@ -1,0 +1,6 @@
+[project]
+name = "job-search-copilot"
+version = "0.1.0"
+description = "An agentic job search copilot: observes listings, evaluates fit, and produces a ranked digest, tailored resumes, and outreach drafts."
+requires-python = ">=3.12"
+dependencies = []

@@ -1,0 +1,45 @@
+# Job Search Copilot — example profile configuration
+# Copy this file to profile.yaml and fill in your own values.
+# Validation rules for every field are documented in the Development Plan.
+
+resume_path: ""            # required — path to your resume (.pdf or .docx)
+preferred_roles: []        # required — non-empty list of role titles
+locations: []              # required — non-empty list of locations
+
+compensation:
+  minimum_salary: 0
+  currency: ""              # ISO 4217 code, e.g. USD, INR, GBP
+
+dream_companies: []
+
+referral_contacts: []       # each: {name, company, email (optional)}
+
+email: ""                   # required — profile-level contact email
+
+llm:
+  provider: ""               # one of: anthropic, openai, ollama
+  model: ""
+  fallback_provider: ""      # optional — both fallback fields required together
+  fallback_model: ""
+
+thresholds:
+  tailoring_score_min: 0.75
+  follow_up:
+    outreach_days: 7
+    application_with_contact_days: 12
+    expiry_weeks: 4
+
+sources:
+  ats: []                    # from: greenhouse, lever, ashby
+  aggregators: []             # from: adzuna_india, remoteok, himalayas
+  custom_career_pages_config: ""  # optional path to custom_pages.yaml
+
+mode: "single"               # single | shared
+
+notifications:
+  digest_email_enabled: true
+  send_time_local: ""         # required if digest_email_enabled — HH:MM 24h
+  timezone: ""                 # required if digest_email_enabled — IANA tz
+
+dashboard:
+  access_control: "restricted"
