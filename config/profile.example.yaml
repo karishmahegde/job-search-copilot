@@ -1,45 +1,112 @@
 # Job Search Copilot — example profile configuration
-# Copy this file to profile.yaml and fill in your own values.
-# Validation rules for every field are documented in the Development Plan.
+#
+# Copy this file to config/profile.yaml and replace the sample values with
+# your own. profile.yaml is the single file a new user edits to run their
+# own instance (FR14 / NFR5) — no code changes are needed anywhere.
+#
+#   cp config/profile.example.yaml config/profile.yaml
+#
+# The schema that validates this file is config/schema.py. The sample
+# values below are all valid, so this example itself passes validation.
+# Unknown / misspelled keys are rejected with an error naming the key.
+# Secrets (API keys, tokens) never go here — they live in .env.
 
-resume_path: ""            # required — path to your resume (.pdf or .docx)
-preferred_roles: []        # required — non-empty list of role titles
-locations: []              # required — non-empty list of locations
+# --- Resume -----------------------------------------------------------------
+# Required. Path to your master resume, relative to the repo root.
+# Must end in .pdf or .docx.
+resume_path: "resume_generation/master_resume.pdf"
 
+# --- Targeting ------------------------------------------------------------
+# Required. Non-empty list of role titles you want to be matched against.
+preferred_roles:
+  - "Senior Software Engineer"
+  - "Backend Engineer"
+  - "Platform Engineer"
+
+# Required. Non-empty list of acceptable locations. Free-form text —
+# "Remote", a city, a country, or a region are all fine.
+locations:
+  - "Remote"
+  - "Bengaluru, India"
+
+# Optional. Compensation preferences.
 compensation:
-  minimum_salary: 0
-  currency: ""              # ISO 4217 code, e.g. USD, INR, GBP
+  minimum_salary: 0 # lowest acceptable annual salary; 0 = no floor
+  currency: "USD" # ISO 4217 code (USD, INR, GBP, ...) or "" if unset
 
-dream_companies: []
+# --- Networking ---------------------------------------------------------
+# Optional. Companies you especially want to work at. A role at one of
+# these is eligible for follow-up nudges (FR10) even without a contact.
+dream_companies:
+  - "Stripe"
+  - "Linear"
 
-referral_contacts: []       # each: {name, company, email (optional)}
+# Optional. People you already know at a company. Each entry needs a name
+# and company; email is optional. Used by check_referral_contacts().
+referral_contacts:
+  - name: "Alex Rivera"
+    company: "Stripe"
+    email: "alex.rivera@example.com"
+  - name: "Priya Menon"
+    company: "Linear"
 
-email: ""                   # required — profile-level contact email
+# Required. Profile-level contact email (used on generated applications
+# and as the reply-to on outreach drafts).
+email: "you@example.com"
 
+# --- LLM provider ------------------------------------------------------
+# Required. Routed through LiteLLM (FR15) — the provider is a config
+# choice, not a code dependency. provider is one of: anthropic, openai,
+# ollama. Set the matching API key in .env (Ollama needs none).
 llm:
-  provider: ""               # one of: anthropic, openai, ollama
-  model: ""
-  fallback_provider: ""      # optional — both fallback fields required together
-  fallback_model: ""
+  provider: "anthropic"
+  model: "claude-sonnet-4-5"
+  # Optional fallback used when the primary provider errors or times out.
+  # Both fields are required together, or omit both. The fallback needs
+  # credentials too, if you choose a paid provider — set its API key in
+  # .env just like the primary (Ollama needs none, so it's shown below
+  # as the zero-setup default).
+  # fallback_provider: "ollama"
+  # fallback_model: "llama3.1"
 
+# --- Thresholds -------------------------------------------------------
+# Optional — every field has a default shown below.
 thresholds:
-  tailoring_score_min: 0.75
+  tailoring_score_min: 0.75 # match score (0-1) that triggers resume tailoring
   follow_up:
-    outreach_days: 7
-    application_with_contact_days: 12
-    expiry_weeks: 4
+    outreach_days: 7 # wait N days after outreach, then nudge
+    application_with_contact_days: 12 # wait N days after applying (w/ contact)
+    expiry_weeks: 4 # expire an unresolved tracked role after
 
+# --- Listing sources -------------------------------------------------
+# Optional. Enable the sources you want collected (FR2 / FR3).
 sources:
-  ats: []                    # from: greenhouse, lever, ashby
-  aggregators: []             # from: adzuna_india, remoteok, himalayas
-  custom_career_pages_config: ""  # optional path to custom_pages.yaml
+  ats: ["greenhouse", "lever", "ashby"] # subset of these three
+  aggregators: ["adzuna_india", "remoteok", "himalayas"] # subset of these
+  custom_career_pages_config: "config/custom_pages.yaml" # or "" if unused
 
-mode: "single"               # single | shared
+# --- Mode ------------------------------------------------------------
+# Optional. "single" (default) is a fully standalone instance. "shared"
+# opts into sharing only contacts + skill-gap data with partner
+# instances (FR16) and requires a non-empty `partners` list below.
+mode: "single"
 
+# Only used when mode is "shared". Each partner's read-only key lives in
+# .env under the named variable — never in this file.
+partners: []
+#   - name: "alex"
+#     supabase_url: "https://alex-project-ref.supabase.co"
+#     readonly_key_env: "PARTNER_ALEX_SUPABASE_READONLY_KEY"
+
+# --- Notifications --------------------------------------------------
+# Optional. When digest_email_enabled is true, send_time_local (HH:MM,
+# 24-hour) and timezone (IANA name) are both required.
 notifications:
   digest_email_enabled: true
-  send_time_local: ""         # required if digest_email_enabled — HH:MM 24h
-  timezone: ""                 # required if digest_email_enabled — IANA tz
+  send_time_local: "08:00"
+  timezone: "Asia/Kolkata"
 
+# --- Dashboard -----------------------------------------------------
+# Optional. "restricted" (default) or "public".
 dashboard:
   access_control: "restricted"

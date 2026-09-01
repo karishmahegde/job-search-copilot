@@ -3,4 +3,30 @@ name = "job-search-copilot"
 version = "0.1.0"
 description = "An agentic job search copilot: observes listings, evaluates fit, and produces a ranked digest, tailored resumes, and outreach drafts."
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pydantic[email]>=2.13.5",
+    "pyyaml>=6.0.3",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.5",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.format]
+# Don't reformat Python snippets embedded in Markdown docs (AGENTS.md etc.).
+exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B011"]
